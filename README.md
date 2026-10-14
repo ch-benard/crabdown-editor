@@ -31,6 +31,8 @@ npm run typecheck      # TypeScript type check
 npm run tauri build    # release build and bundles
 ```
 
+Standalone builds and installers for Linux and Windows: see [`docs/BUILDING.md`](docs/BUILDING.md).
+
 Rust checks (from `src-tauri/`):
 
 ```sh
