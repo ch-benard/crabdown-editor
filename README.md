@@ -7,7 +7,7 @@ Specification (in French): [`docs/CAHIER_DES_CHARGES.md`](docs/CAHIER_DES_CHARGE
 ## Prerequisites
 
 - **Rust ≥ 1.90** via [rustup](https://rustup.rs/) (`rustup update stable`)
-- **Node.js 22 LTS** and npm
+- **Node.js 24 LTS** and npm
 - Tauri system libraries (see the [official prerequisites](https://tauri.app/start/prerequisites/)):
 
 **Arch / Garuda**
