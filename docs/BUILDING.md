@@ -42,6 +42,7 @@ On the first AppImage build, the Tauri CLI downloads its own packaging tools (`l
 ### Troubleshooting
 
 - **AppImage step fails with a `strip` error** (`failed to run linuxdeploy`): the `strip` bundled with linuxdeploy can be too old for the libraries of a rolling-release distribution. Rerun with `NO_STRIP=true npm run tauri build -- --bundles appimage`.
+- **`failed to bundle project: timeout: global`** while downloading `AppRun` or `linuxdeploy`: the download from github.com timed out, often because IPv6 is advertised but not working. Make the system prefer IPv4 by adding `precedence ::ffff:0:0/96  100` to `/etc/gai.conf`, then rerun the build. The tools are cached in `~/.cache/tauri/`, so this download happens only once. When the bundling fails, any AppImage already in `bundle/appimage/` comes from a previous build.
 - **Blank window** (Nvidia GPU and/or Wayland): start the app with `WEBKIT_DISABLE_DMABUF_RENDERER=1`.
 
 ## Linux (Debian / Ubuntu)
