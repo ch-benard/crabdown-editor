@@ -188,7 +188,7 @@ Choisis selon les conventions les plus répandues : traitements de texte (Word, 
 | Plein écran | `F11` |
 | Zoom + / − / réinitialiser | `Ctrl++` / `Ctrl+-` / `Ctrl+0` dans l'aperçu |
 
-Les raccourcis seront regroupés dans un fichier unique (`keymap.ts`) pour pouvoir les rendre personnalisables plus tard.
+Les libellés de l'interface seront en anglais (voir §8). Les raccourcis seront regroupés dans un fichier unique (`keymap.ts`) pour pouvoir les rendre personnalisables plus tard.
 
 ---
 
@@ -229,7 +229,7 @@ Les raccourcis seront regroupés dans un fichier unique (`keymap.ts`) pour pouvo
 
 ## 6. Dépendances à valider avant installation
 
-Aucune ne sera ajoutée sans validation.
+Rust et système : aucune ne sera ajoutée sans validation. npm : choix délégué (voir §8), chaque PR liste les paquets ajoutés.
 
 **Rust (`src-tauri/Cargo.toml`)**
 - `comrak` (rendu Markdown, avec la fonctionnalité `syntect`)
@@ -263,10 +263,14 @@ Chaque lot fera l'objet d'une PR séparée.
 
 ---
 
-## 8. Questions ouvertes
+## 8. Décisions
 
-1. **Moteur de rendu** : `comrak` en Rust (proposé) ou `markdown-it` en TypeScript ?
-2. **Extensions « Opt. »** : lesquelles activer par défaut ?
-3. **Onglets** : un seul document à la fois (v1 proposée) ou plusieurs onglets ?
-4. **Langue de l'interface** : français uniquement, ou français + anglais (i18n) dès le départ ?
-5. **Export PDF** : le passage par le dialogue d'impression du système te convient-il pour la v1 ?
+| Sujet | Décision |
+|---|---|
+| Moteur de rendu | Back-end en Rust avec `comrak` ; interface en TypeScript dans la WebView Tauri. |
+| Paquets npm | Choisis au fil des lots ; chaque PR liste les paquets ajoutés. |
+| Extensions activées | Maths, Mermaid, émojis, alertes, front matter, table des matières, chacune désactivable dans les préférences. Surligné, listes de définitions et indice / exposant abrégés : désactivés par défaut. |
+| Onglets | Un seul document ouvert à la fois en v1. |
+| Langue de l'interface | Anglais uniquement en v1. Textes de l'interface regroupés dans un module unique pour permettre l'ajout ultérieur du français et de l'espagnol. |
+| Export PDF | Dialogue d'impression du système (`window.print()`) en v1. |
+| Workflow Git | Branches de travail fusionnées par PR dans `develop` ; `main` reçoit les versions publiées. |
