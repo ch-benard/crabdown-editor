@@ -1,22 +1,24 @@
-import { invoke } from "@tauri-apps/api/core";
-
-let greetInputEl: HTMLInputElement | null;
-let greetMsgEl: HTMLElement | null;
-
-async function greet() {
-  if (greetMsgEl && greetInputEl) {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    greetMsgEl.textContent = await invoke("greet", {
-      name: greetInputEl.value,
-    });
-  }
-}
+import { createEditor } from "./editor";
+import { createPreview, syncScroll } from "./preview";
+import { initSplitter } from "./splitter";
+import { strings } from "./strings";
 
 window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
-  document.querySelector("#greet-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    greet();
-  });
+  const layout = document.querySelector<HTMLElement>(".workspace")!;
+  const editorPane = layout.querySelector<HTMLElement>(".editor-pane")!;
+  const previewPane = layout.querySelector<HTMLElement>(".preview-pane")!;
+  const splitter = layout.querySelector<HTMLElement>(".splitter")!;
+
+  document.title = strings.appTitle;
+  editorPane.setAttribute("aria-label", strings.editorLabel);
+  previewPane.setAttribute("aria-label", strings.previewLabel);
+  splitter.setAttribute("aria-label", strings.splitterLabel);
+
+  const preview = createPreview(previewPane);
+  const editor = createEditor(editorPane, strings.welcomeDocument, preview.scheduleRender);
+  void preview.render(editor.state.doc.toString());
+
+  syncScroll(editor.scrollDOM, previewPane);
+  initSplitter(layout, splitter);
+  editor.focus();
 });
