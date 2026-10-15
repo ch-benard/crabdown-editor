@@ -1,4 +1,7 @@
+import { invoke } from "@tauri-apps/api/core";
+import { createDocumentActions } from "./document";
 import { createEditor } from "./editor";
+import { initMenu } from "./menu";
 import { createPreview, syncScroll } from "./preview";
 import { initSplitter } from "./splitter";
 import { strings } from "./strings";
@@ -15,10 +18,16 @@ window.addEventListener("DOMContentLoaded", () => {
   splitter.setAttribute("aria-label", strings.splitterLabel);
 
   const preview = createPreview(previewPane);
-  const editor = createEditor(editorPane, strings.welcomeDocument, preview.scheduleRender);
-  void preview.render(editor.state.doc.toString());
+  const editor = createEditor(editorPane, strings.welcomeDocument, (doc) => {
+    preview.scheduleRender(doc);
+    actions.markModified();
+  });
+  const actions = createDocumentActions(editor, preview);
+  void preview.render(editor.getDocument());
+  void invoke("set_modified", { modified: false });
 
-  syncScroll(editor.scrollDOM, previewPane);
+  syncScroll(editor.view.scrollDOM, previewPane);
   initSplitter(layout, splitter);
-  editor.focus();
+  initMenu(actions, editor, layout);
+  editor.view.focus();
 });

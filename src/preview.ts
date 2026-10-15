@@ -15,6 +15,7 @@ export function createPreview(element: HTMLElement): Preview {
   let latest = 0;
 
   async function render(source: string): Promise<void> {
+    window.clearTimeout(timer);
     const request = ++latest;
     try {
       const html = await invoke<string>("render_markdown", { source });
