@@ -3,6 +3,7 @@ mod files;
 mod markdown;
 mod menu;
 mod strings;
+mod theme;
 
 use std::sync::Mutex;
 
@@ -39,6 +40,8 @@ pub fn run() {
             files::export_html,
             files::confirm_discard,
             files::quit,
+            theme::set_theme,
+            theme::current_theme,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

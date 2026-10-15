@@ -11,7 +11,7 @@ const PAGE_CSS: &str = "body {
   font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif;
   line-height: 1.5;
   color: var(--text);
-  background: #ffffff;
+  background: var(--bg);
 }
 ";
 

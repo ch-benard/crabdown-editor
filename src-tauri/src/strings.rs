@@ -53,4 +53,9 @@ pub mod menu {
 
     pub const VIEW: &str = "View";
     pub const SHOW_PREVIEW: &str = "Show Preview";
+    pub const THEME: &str = "Theme";
+    pub const THEME_SYSTEM: &str = "System";
+    pub const THEME_LIGHT: &str = "Light";
+    pub const THEME_DARK: &str = "Dark";
+    pub const CYCLE_THEME: &str = "Cycle Theme";
 }

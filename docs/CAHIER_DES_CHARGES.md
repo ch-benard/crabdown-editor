@@ -184,7 +184,7 @@ Choisis selon les conventions les plus répandues : traitements de texte (Word, 
 |---|---|
 | Afficher / masquer l'arborescence | `Ctrl+Shift+E` (VS Code) |
 | Afficher / masquer l'aperçu | `Ctrl+\` |
-| Changer de thème | `Ctrl+Alt+T` |
+| Changer de thème | `Ctrl+Shift+T` (`Ctrl+Alt+T` ouvre le terminal sous KDE, GNOME et Xfce) |
 | Plein écran | `F11` |
 | Zoom + / − / réinitialiser | `Ctrl++` / `Ctrl+-` / `Ctrl+0` dans l'aperçu |
 

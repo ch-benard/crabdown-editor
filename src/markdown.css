@@ -1,6 +1,8 @@
 /* Rendered Markdown, shared by the preview and the HTML export. */
 
 :root {
+  color-scheme: light;
+  --bg: #ffffff;
   --border: #d0d7de;
   --muted: #59636e;
   --surface: #f6f8fa;
@@ -143,4 +145,37 @@
 
 .markdown-alert-caution {
   --alert-color: #cf222e;
+}
+
+/* Dark theme (preview only: exports and printing stay light). Matches CodeMirror One Dark. */
+@media screen {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #282c34;
+    --border: #3e4451;
+    --muted: #8b929e;
+    --surface: #21252b;
+    --accent: #61afef;
+    --text: #d7dae0;
+  }
+
+  [data-theme="dark"] .markdown-alert-note {
+    --alert-color: #4493f8;
+  }
+
+  [data-theme="dark"] .markdown-alert-tip {
+    --alert-color: #3fb950;
+  }
+
+  [data-theme="dark"] .markdown-alert-important {
+    --alert-color: #ab7df8;
+  }
+
+  [data-theme="dark"] .markdown-alert-warning {
+    --alert-color: #d29922;
+  }
+
+  [data-theme="dark"] .markdown-alert-caution {
+    --alert-color: #f85149;
+  }
 }

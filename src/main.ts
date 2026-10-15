@@ -5,6 +5,7 @@ import { initMenu } from "./menu";
 import { createPreview, syncScroll } from "./preview";
 import { initSplitter } from "./splitter";
 import { strings } from "./strings";
+import { initTheme } from "./theme";
 
 window.addEventListener("DOMContentLoaded", () => {
   const layout = document.querySelector<HTMLElement>(".workspace")!;
@@ -28,6 +29,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   syncScroll(editor.view.scrollDOM, previewPane);
   initSplitter(layout, splitter);
-  initMenu(actions, editor, layout);
+  initMenu(actions, editor, initTheme(editor), layout);
   editor.view.focus();
 });

@@ -4,6 +4,7 @@ use tauri::menu::{
 use tauri::{AppHandle, Emitter, Manager, Runtime};
 
 use crate::strings::menu as label;
+use crate::theme;
 
 /// Event sent to the frontend with the id of the activated menu item.
 pub const EVENT: &str = "menu";
@@ -36,13 +37,28 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
         .item(&item("find", label::FIND, "CmdOrCtrl+F")?)
         .build()?;
 
-    let view = SubmenuBuilder::new(app, label::VIEW)
+    let theme_item = |id: &str, text: &str| CheckMenuItemBuilder::with_id(id, text).build(app);
+    let themes = SubmenuBuilder::with_id(app, theme::SUBMENU, label::THEME)
+        .item(&theme_item(theme::SYSTEM, label::THEME_SYSTEM)?)
+        .item(&theme_item(theme::LIGHT, label::THEME_LIGHT)?)
+        .item(&theme_item(theme::DARK, label::THEME_DARK)?)
+        .separator()
+        .item(&item(
+            theme::CYCLE,
+            label::CYCLE_THEME,
+            "CmdOrCtrl+Shift+T",
+        )?)
+        .build()?;
+
+    let view = SubmenuBuilder::with_id(app, theme::VIEW_MENU, label::VIEW)
         .item(
             &CheckMenuItemBuilder::with_id("toggle_preview", label::SHOW_PREVIEW)
                 .checked(true)
                 .accelerator("CmdOrCtrl+Backslash")
                 .build(app)?,
         )
+        .separator()
+        .item(&themes)
         .build()?;
 
     MenuBuilder::new(app).items(&[&file, &edit, &view]).build()
