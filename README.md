@@ -41,6 +41,14 @@ cargo clippy --all-targets -- -D warnings
 cargo test
 ```
 
+## Theme
+
+**View → Theme** offers *System* (default), *Light* and *Dark*; `Ctrl+Shift+T` cycles through them. The choice is remembered.
+
+In *System* mode the editor follows the OS colour scheme live. On Linux it is read from the XDG desktop portal (`org.freedesktop.appearance color-scheme`), so it follows the desktop's light/dark setting on KDE Plasma (`xdg-desktop-portal-kde`) and GNOME (`xdg-desktop-portal-gnome` or `-gtk`). Without a portal, *System* falls back to light.
+
+Exported HTML and printed PDFs always use the light theme.
+
 ## Git workflow
 
 - `main`: released versions. `develop`: integration branch.
