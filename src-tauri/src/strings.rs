@@ -52,6 +52,7 @@ pub mod menu {
     pub const FIND: &str = "Find…";
 
     pub const VIEW: &str = "View";
+    pub const SHOW_TOOLBAR: &str = "Show Toolbar";
     pub const SHOW_PREVIEW: &str = "Show Preview";
     pub const THEME: &str = "Theme";
     pub const THEME_SYSTEM: &str = "System";

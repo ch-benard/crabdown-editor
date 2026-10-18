@@ -105,7 +105,7 @@ Mentions `@utilisateur`, références `#123` et SHA, liens permanents vers du co
 
 ## 3. Barre d'outils
 
-Groupes, de gauche à droite (icônes + infobulle « Action (raccourci) ») :
+Groupes, de gauche à droite (boutons à étiquettes texte courtes — `H1`, `B`, `</>`, `tbl`, `url`… — et infobulle « Action (raccourci) ») :
 
 1. **Fichier** : Nouveau · Ouvrir · Ouvrir un dossier · Enregistrer · Exporter (menu : HTML, PDF)
 2. **Historique** : Annuler · Rétablir

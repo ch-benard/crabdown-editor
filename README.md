@@ -41,6 +41,15 @@ cargo clippy --all-targets -- -D warnings
 cargo test
 ```
 
+## Toolbar
+
+A thin formatting toolbar sits above the editor; hide or show it with **View → Show Toolbar** (the choice is remembered).
+
+- Buttons wrap the selection (`**…**`) or remove the formatting when it is already there; without a selection they insert a template with the placeholder selected.
+- Visible groups: headings (H1–H3), inline formatting (bold, italic, strikethrough, inline code, clear formatting) and code block, lists and quote, inserts (horizontal rule, table, link, image, footnote).
+- The **▾** menu holds Paragraph, H4–H6, underline, superscript, subscript and the GitHub alerts.
+- Every button shows its keyboard shortcut in its tooltip. The shortcuts are listed in `src/keymap.ts`.
+
 ## Theme
 
 **View → Theme** offers *System* (default), *Light* and *Dark*; `Ctrl+Shift+T` cycles through them. The choice is remembered.

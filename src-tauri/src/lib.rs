@@ -42,6 +42,7 @@ pub fn run() {
             files::quit,
             theme::set_theme,
             theme::current_theme,
+            menu::set_toolbar_visible,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
