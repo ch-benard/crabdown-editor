@@ -32,7 +32,8 @@ export const shortcuts: Partial<Record<ActionId, string>> = {
 };
 
 export function formattingKeymap() {
-  return Prec.high(
+  // Highest: autocompletion binds Ctrl-Space at Prec.highest.
+  return Prec.highest(
     keymap.of(
       Object.entries(shortcuts).map(([id, key]) => ({
         key,
