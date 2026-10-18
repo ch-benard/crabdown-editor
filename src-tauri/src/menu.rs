@@ -1,5 +1,6 @@
 use tauri::menu::{
-    CheckMenuItemBuilder, Menu, MenuBuilder, MenuEvent, MenuItemBuilder, SubmenuBuilder,
+    CheckMenuItemBuilder, Menu, MenuBuilder, MenuEvent, MenuItemBuilder, MenuItemKind,
+    SubmenuBuilder,
 };
 use tauri::{AppHandle, Emitter, Manager, Runtime};
 
@@ -9,6 +10,7 @@ use crate::theme;
 /// Event sent to the frontend with the id of the activated menu item.
 pub const EVENT: &str = "menu";
 const PRINT: &str = "print";
+const TOGGLE_TOOLBAR: &str = "toggle_toolbar";
 
 pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
     let item = |id: &str, text: &str, accelerator: &str| {
@@ -52,6 +54,11 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
 
     let view = SubmenuBuilder::with_id(app, theme::VIEW_MENU, label::VIEW)
         .item(
+            &CheckMenuItemBuilder::with_id(TOGGLE_TOOLBAR, label::SHOW_TOOLBAR)
+                .checked(true)
+                .build(app)?,
+        )
+        .item(
             &CheckMenuItemBuilder::with_id("toggle_preview", label::SHOW_PREVIEW)
                 .checked(true)
                 .accelerator("CmdOrCtrl+Backslash")
@@ -62,6 +69,18 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
         .build()?;
 
     MenuBuilder::new(app).items(&[&file, &edit, &view]).build()
+}
+
+/// Keeps View → Show Toolbar in sync with the visibility restored by the frontend.
+#[tauri::command]
+pub fn set_toolbar_visible(app: AppHandle, visible: bool) {
+    let Some(MenuItemKind::Submenu(view)) = app.menu().and_then(|menu| menu.get(theme::VIEW_MENU))
+    else {
+        return;
+    };
+    if let Some(MenuItemKind::Check(item)) = view.get(TOGGLE_TOOLBAR) {
+        let _ = item.set_checked(visible);
+    }
 }
 
 pub fn handle<R: Runtime>(app: &AppHandle<R>, event: MenuEvent) {

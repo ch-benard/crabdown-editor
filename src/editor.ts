@@ -4,6 +4,7 @@ import { EditorView } from "@codemirror/view";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { oneDark } from "@codemirror/theme-one-dark";
+import { formattingKeymap } from "./keymap";
 import { strings } from "./strings";
 
 export interface Editor {
@@ -22,6 +23,7 @@ export function createEditor(
   const theme = new Compartment();
   let dark = false;
   const extensions = () => [
+    formattingKeymap(),
     basicSetup,
     markdown({ base: markdownLanguage, codeLanguages: languages }),
     EditorView.lineWrapping,

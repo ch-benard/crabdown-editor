@@ -18,11 +18,17 @@ body {
   margin: 0;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 .workspace {
   --editor-width: 50%;
   display: grid;
   grid-template-columns: var(--editor-width) 6px 1fr;
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
 }
 
 .workspace.resizing {
@@ -75,7 +81,132 @@ body {
   display: none;
 }
 
+.toolbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar[hidden] {
+  display: none;
+}
+
+.toolbar-groups {
+  display: flex;
+  flex: 1;
+  gap: 14px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 4px;
+}
+
+.tool {
+  min-width: 30px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: 600 12px/1 system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tool:hover {
+  border-color: var(--accent);
+}
+
+.tool:active {
+  background: var(--surface);
+}
+
+.tool:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.tool[data-action="bold"] {
+  font-weight: 800;
+}
+
+.tool[data-action="italic"] {
+  font-style: italic;
+}
+
+.tool[data-action="strike"] {
+  text-decoration: line-through;
+}
+
+.tool[data-action="code"],
+.tool[data-action="codeBlock"] {
+  font-family: ui-monospace, monospace;
+}
+
+.toolbar-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 8px;
+  z-index: 10;
+  min-width: 230px;
+  padding: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+}
+
+.toolbar-menu[hidden] {
+  display: none;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text);
+  font: 13px system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+  background: var(--surface);
+  outline: none;
+}
+
+.menu-item kbd {
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+}
+
+.menu-separator {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--border);
+}
+
 @media print {
+  .toolbar {
+    display: none;
+  }
+
   html,
   body,
   .workspace {
