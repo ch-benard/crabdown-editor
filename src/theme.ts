@@ -7,6 +7,8 @@ type Theme = "light" | "dark";
 
 export interface ThemeController {
   set(preference: ThemePreference): void;
+  /** Restores the check marks of View → Theme. */
+  syncMenu(): void;
   /** System → Light → Dark → System. */
   cycle(): void;
 }
@@ -58,6 +60,7 @@ export function initTheme(editor: Editor): ThemeController {
 
   return {
     set: (next) => void apply(next),
+    syncMenu: () => void apply(preference),
     cycle: () => void apply(ORDER[(ORDER.indexOf(preference) + 1) % ORDER.length]),
   };
 }

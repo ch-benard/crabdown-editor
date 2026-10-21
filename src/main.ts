@@ -1,10 +1,12 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createDocumentActions } from "./document";
 import { createEditor } from "./editor";
+import { initLanguage, onLanguageChange } from "./i18n";
 import { initMenu } from "./menu";
+import { initPreferences } from "./preferences";
 import { createPreview, syncScroll } from "./preview";
 import { initSplitter } from "./splitter";
-import { strings } from "./strings";
+import { appTitle, strings, welcomeDocument } from "./strings";
 import { initTheme } from "./theme";
 import { initToolbar } from "./toolbar";
 
@@ -15,13 +17,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const splitter = layout.querySelector<HTMLElement>(".splitter")!;
   const toolbarRoot = document.querySelector<HTMLElement>(".toolbar")!;
 
-  document.title = strings.appTitle;
-  editorPane.setAttribute("aria-label", strings.editorLabel);
-  previewPane.setAttribute("aria-label", strings.previewLabel);
-  splitter.setAttribute("aria-label", strings.splitterLabel);
+  initLanguage();
+  document.title = appTitle;
+  const applyLabels = () => {
+    editorPane.setAttribute("aria-label", strings.editorLabel);
+    previewPane.setAttribute("aria-label", strings.previewLabel);
+    splitter.setAttribute("aria-label", strings.splitterLabel);
+  };
+  applyLabels();
 
   const preview = createPreview(previewPane);
-  const editor = createEditor(editorPane, strings.welcomeDocument, (doc) => {
+  const editor = createEditor(editorPane, welcomeDocument, (doc) => {
     preview.scheduleRender(doc);
     actions.markModified();
   });
@@ -31,6 +37,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   syncScroll(editor.view.scrollDOM, previewPane);
   initSplitter(layout, splitter);
-  initMenu(actions, editor, initTheme(editor), initToolbar(toolbarRoot, editor.view), layout);
+  onLanguageChange(() => {
+    applyLabels();
+    editor.refreshLabels();
+  });
+  initMenu(
+    actions,
+    editor,
+    initTheme(editor),
+    initToolbar(toolbarRoot, editor.view),
+    initPreferences(() => editor.view.focus()),
+    layout,
+  );
   editor.view.focus();
 });

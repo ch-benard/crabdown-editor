@@ -1,8 +1,11 @@
+import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { redo, undo } from "@codemirror/commands";
 import { openSearchPanel } from "@codemirror/search";
 import type { DocumentActions } from "./document";
 import type { Editor } from "./editor";
+import { onLanguageChange } from "./i18n";
+import type { Preferences } from "./preferences";
 import type { ThemeController } from "./theme";
 import type { Toolbar } from "./toolbar";
 
@@ -12,8 +15,17 @@ export function initMenu(
   editor: Editor,
   theme: ThemeController,
   toolbar: Toolbar,
+  preferences: Preferences,
   workspace: HTMLElement,
 ): void {
+  // The menu is rebuilt with default check marks when the language changes.
+  onLanguageChange(() => {
+    theme.syncMenu();
+    toolbar.syncMenu();
+    const checked = !workspace.classList.contains("preview-hidden");
+    void invoke("set_view_checked", { id: "toggle_preview", checked });
+  });
+
   const handlers: Record<string, () => void> = {
     new: actions.newDocument,
     open: actions.open,
@@ -24,6 +36,7 @@ export function initMenu(
     undo: () => undo(editor.view),
     redo: () => redo(editor.view),
     find: () => openSearchPanel(editor.view),
+    preferences: () => preferences.open(),
     toggle_toolbar: () => toolbar.toggle(),
     toggle_preview: () => workspace.classList.toggle("preview-hidden"),
     theme_system: () => theme.set("system"),

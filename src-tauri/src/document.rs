@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use crate::strings::{APP_NAME, UNTITLED};
+use crate::strings::{self, APP_NAME};
 
 pub const MARKDOWN_EXTENSIONS: &[&str] = &["md", "markdown", "mdown", "mkd"];
 
@@ -18,7 +18,7 @@ const PAGE_CSS: &str = "body {
 /// File name shown in the window title and dialogs.
 pub fn display_name(path: Option<&Path>) -> String {
     path.and_then(Path::file_name).map_or_else(
-        || UNTITLED.to_owned(),
+        || strings::current().untitled.to_owned(),
         |name| name.to_string_lossy().into_owned(),
     )
 }
@@ -26,7 +26,7 @@ pub fn display_name(path: Option<&Path>) -> String {
 /// File name without extension, used as the title of exported documents.
 pub fn title(path: Option<&Path>) -> String {
     path.and_then(Path::file_stem).map_or_else(
-        || UNTITLED.to_owned(),
+        || strings::current().untitled.to_owned(),
         |stem| stem.to_string_lossy().into_owned(),
     )
 }

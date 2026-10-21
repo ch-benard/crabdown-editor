@@ -13,6 +13,7 @@ export interface Editor {
   /** Replaces the document and clears the undo history. */
   setDocument(doc: string): void;
   setDarkTheme(dark: boolean): void;
+  refreshLabels(): void;
 }
 
 export function createEditor(
@@ -21,13 +22,15 @@ export function createEditor(
   onChange: (doc: string) => void,
 ): Editor {
   const theme = new Compartment();
+  const label = new Compartment();
+  const labelAttributes = () => EditorView.contentAttributes.of({ "aria-label": strings.editorLabel });
   let dark = false;
   const extensions = () => [
     formattingKeymap(),
     basicSetup,
     markdown({ base: markdownLanguage, codeLanguages: languages }),
     EditorView.lineWrapping,
-    EditorView.contentAttributes.of({ "aria-label": strings.editorLabel }),
+    label.of(labelAttributes()),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) onChange(update.state.doc.toString());
     }),
@@ -45,6 +48,9 @@ export function createEditor(
     setDarkTheme(value) {
       dark = value;
       view.dispatch({ effects: theme.reconfigure(dark ? oneDark : []) });
+    },
+    refreshLabels() {
+      view.dispatch({ effects: label.reconfigure(labelAttributes()) });
     },
   };
 }

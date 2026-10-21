@@ -42,6 +42,11 @@ fn update(window: &WebviewWindow, state: &SharedState, change: impl FnOnce(&mut 
     let _ = window.set_title(&title);
 }
 
+/// Updates the window title, e.g. after a language change.
+pub fn refresh_title(window: &WebviewWindow, state: &SharedState) {
+    update(window, state, |_| {});
+}
+
 fn file_dialog(window: &WebviewWindow, current: Option<&Path>) -> FileDialogBuilder<Wry> {
     let dialog = window.dialog().file().set_parent(window);
     match current.and_then(Path::parent) {
@@ -74,7 +79,7 @@ fn write_and_record(
     content: &str,
 ) -> Result<(), String> {
     fs::write(&path, content)
-        .map_err(|error| show_error(window, strings::save_failed(&path, &error)))?;
+        .map_err(|error| show_error(window, strings::current().save_failed(&path, &error)))?;
     update(window, state, |doc| {
         doc.path = Some(path);
         doc.modified = false;
@@ -89,7 +94,7 @@ fn save_as(window: &WebviewWindow, state: &SharedState, content: &str) -> Result
         |name| name.to_string_lossy().into_owned(),
     );
     let picked = file_dialog(window, current.as_deref())
-        .set_title(strings::SAVE_AS_TITLE)
+        .set_title(strings::current().save_as_title)
         .set_file_name(file_name)
         .add_filter(strings::MARKDOWN_FILTER, document::MARKDOWN_EXTENSIONS)
         .blocking_save_file();
@@ -123,15 +128,15 @@ pub async fn open_document(
 ) -> Result<Option<String>, String> {
     let current = lock(&state).path.clone();
     let picked = file_dialog(&window, current.as_deref())
-        .set_title(strings::OPEN_TITLE)
+        .set_title(strings::current().open_title)
         .add_filter(strings::MARKDOWN_FILTER, document::MARKDOWN_EXTENSIONS)
-        .add_filter(strings::ALL_FILES_FILTER, &["*"])
+        .add_filter(strings::current().all_files_filter, &["*"])
         .blocking_pick_file();
     let Some(path) = into_path(picked)? else {
         return Ok(None);
     };
     let content = fs::read_to_string(&path)
-        .map_err(|error| show_error(&window, strings::open_failed(&path, &error)))?;
+        .map_err(|error| show_error(&window, strings::current().open_failed(&path, &error)))?;
     update(&window, &state, |doc| {
         doc.path = Some(path);
         doc.modified = false;
@@ -170,7 +175,7 @@ pub async fn export_html(
 ) -> Result<bool, String> {
     let current = lock(&state).path.clone();
     let picked = file_dialog(&window, current.as_deref())
-        .set_title(strings::EXPORT_HTML_TITLE)
+        .set_title(strings::current().export_html_title)
         .set_file_name(document::default_file_name(current.as_deref(), "html"))
         .add_filter(strings::HTML_FILTER, &["html", "htm"])
         .blocking_save_file();
@@ -183,7 +188,7 @@ pub async fn export_html(
         &markdown::render(&content),
     );
     fs::write(&path, html)
-        .map_err(|error| show_error(&window, strings::export_failed(&path, &error)))?;
+        .map_err(|error| show_error(&window, strings::current().export_failed(&path, &error)))?;
     Ok(true)
 }
 
@@ -196,21 +201,21 @@ pub async fn confirm_discard(
     let name = document::display_name(lock(&state).path.as_deref());
     let result = window
         .dialog()
-        .message(strings::confirm_discard(&name))
+        .message(strings::current().confirm_discard(&name))
         .title(strings::APP_NAME)
         .kind(MessageDialogKind::Warning)
         .parent(&window)
         .buttons(MessageDialogButtons::YesNoCancelCustom(
-            strings::SAVE.into(),
-            strings::DONT_SAVE.into(),
-            strings::CANCEL.into(),
+            strings::current().save.into(),
+            strings::current().dont_save.into(),
+            strings::current().cancel.into(),
         ))
         .blocking_show_with_result();
     Ok(match result {
         MessageDialogResult::Yes => "save",
         MessageDialogResult::No => "discard",
-        MessageDialogResult::Custom(label) if label == strings::SAVE => "save",
-        MessageDialogResult::Custom(label) if label == strings::DONT_SAVE => "discard",
+        MessageDialogResult::Custom(label) if label == strings::current().save => "save",
+        MessageDialogResult::Custom(label) if label == strings::current().dont_save => "discard",
         _ => "cancel",
     })
 }
