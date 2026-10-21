@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import type { EditorView } from "@codemirror/view";
 import { commands, type ActionId } from "./formatting";
 import { describeShortcut, shortcuts } from "./keymap";
+import { onLanguageChange } from "./i18n";
 import { strings } from "./strings";
 
 /** Visible buttons as [action, short label], by group. */
@@ -45,6 +46,8 @@ const STORAGE_KEY = "toolbar";
 
 export interface Toolbar {
   toggle(): void;
+  /** Restores the check mark of View → Show Toolbar. */
+  syncMenu(): void;
 }
 
 export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
@@ -64,7 +67,8 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
   };
 
   root.setAttribute("role", "toolbar");
-  root.setAttribute("aria-label", strings.toolbarLabel);
+  const tools: [HTMLElement, ActionId][] = [];
+  const items: [HTMLElement, ActionId][] = [];
 
   const groups = document.createElement("div");
   groups.className = "toolbar-groups";
@@ -75,8 +79,7 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
       const tool = button("tool", () => run(id));
       tool.dataset.action = id;
       tool.textContent = label;
-      tool.setAttribute("aria-label", strings.actions[id]);
-      tool.title = shortcut(id) ? `${strings.actions[id]} (${shortcut(id)})` : strings.actions[id];
+      tools.push([tool, id]);
       el.append(tool);
     }
     groups.append(el);
@@ -88,8 +91,6 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
   menu.hidden = true;
   const more = button("tool more", () => setMenuOpen(menu.hidden === true));
   more.textContent = "▾";
-  more.title = strings.moreLabel;
-  more.setAttribute("aria-label", strings.moreLabel);
   more.setAttribute("aria-haspopup", "menu");
 
   const setMenuOpen = (open: boolean) => {
@@ -110,7 +111,7 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
       });
       item.setAttribute("role", "menuitem");
       const label = document.createElement("span");
-      label.textContent = strings.actions[id];
+      items.push([label, id]);
       const key = document.createElement("kbd");
       key.textContent = shortcut(id);
       item.append(label, key);
@@ -130,13 +131,27 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
 
   root.append(groups, more, menu);
 
+  const applyLabels = () => {
+    root.setAttribute("aria-label", strings.toolbarLabel);
+    for (const [tool, id] of tools) {
+      tool.setAttribute("aria-label", strings.actions[id]);
+      tool.title = shortcut(id) ? `${strings.actions[id]} (${shortcut(id)})` : strings.actions[id];
+    }
+    more.title = strings.moreLabel;
+    more.setAttribute("aria-label", strings.moreLabel);
+    for (const [label, id] of items) label.textContent = strings.actions[id];
+  };
+  applyLabels();
+  onLanguageChange(applyLabels);
+
   let visible = localStorage.getItem(STORAGE_KEY) !== "hidden";
   const show = () => {
     root.hidden = !visible;
     if (!visible) setMenuOpen(false);
     localStorage.setItem(STORAGE_KEY, visible ? "visible" : "hidden");
-    void invoke("set_toolbar_visible", { visible });
+    syncMenu();
   };
+  const syncMenu = () => void invoke("set_view_checked", { id: "toggle_toolbar", checked: visible });
   show();
 
   return {
@@ -144,5 +159,6 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
       visible = !visible;
       show();
     },
+    syncMenu,
   };
 }
