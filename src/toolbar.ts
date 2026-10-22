@@ -50,7 +50,7 @@ export interface Toolbar {
   syncMenu(): void;
 }
 
-export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
+export function initToolbar(root: HTMLElement, view: EditorView, onToggleView: () => void): Toolbar {
   const run = (id: ActionId) => {
     commands[id](view);
     view.focus();
@@ -93,6 +93,9 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
   more.textContent = "▾";
   more.setAttribute("aria-haspopup", "menu");
 
+  const viewToggle = button("tool view-toggle", onToggleView);
+  viewToggle.textContent = "◐";
+
   const setMenuOpen = (open: boolean) => {
     menu.hidden = !open;
     more.setAttribute("aria-expanded", String(open));
@@ -129,7 +132,7 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
     }
   });
 
-  root.append(groups, more, menu);
+  root.append(groups, viewToggle, more, menu);
 
   const applyLabels = () => {
     root.setAttribute("aria-label", strings.toolbarLabel);
@@ -139,6 +142,8 @@ export function initToolbar(root: HTMLElement, view: EditorView): Toolbar {
     }
     more.title = strings.moreLabel;
     more.setAttribute("aria-label", strings.moreLabel);
+    viewToggle.title = strings.previewOnlyLabel;
+    viewToggle.setAttribute("aria-label", strings.previewOnlyLabel);
     for (const [label, id] of items) label.textContent = strings.actions[id];
   };
   applyLabels();

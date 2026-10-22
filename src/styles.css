@@ -81,6 +81,19 @@ body {
   display: none;
 }
 
+.workspace.editor-hidden {
+  grid-template-columns: 1fr;
+}
+
+.editor-hidden .splitter,
+.editor-hidden .editor-pane {
+  display: none;
+}
+
+body:has(.workspace.editor-hidden) .toolbar {
+  display: none;
+}
+
 .toolbar {
   position: relative;
   display: flex;
