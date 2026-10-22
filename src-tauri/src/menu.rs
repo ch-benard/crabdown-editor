@@ -12,6 +12,7 @@ use crate::theme;
 pub const EVENT: &str = "menu";
 const PRINT: &str = "print";
 const TOGGLE_TOOLBAR: &str = "toggle_toolbar";
+const TOGGLE_EDITOR: &str = "toggle_editor";
 const TOGGLE_PREVIEW: &str = "toggle_preview";
 
 pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
@@ -62,6 +63,12 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
                 .build(app)?,
         )
         .item(
+            &CheckMenuItemBuilder::with_id(TOGGLE_EDITOR, label.show_editor)
+                .checked(true)
+                .accelerator("CmdOrCtrl+Shift+P")
+                .build(app)?,
+        )
+        .item(
             &CheckMenuItemBuilder::with_id(TOGGLE_PREVIEW, label.show_preview)
                 .checked(true)
                 .accelerator("CmdOrCtrl+Backslash")
@@ -77,7 +84,7 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
 /// Keeps View → Show Toolbar / Show Preview in sync with the frontend.
 #[tauri::command]
 pub fn set_view_checked(app: AppHandle, id: &str, checked: bool) {
-    if id != TOGGLE_TOOLBAR && id != TOGGLE_PREVIEW {
+    if ![TOGGLE_TOOLBAR, TOGGLE_EDITOR, TOGGLE_PREVIEW].contains(&id) {
         return;
     }
     let Some(MenuItemKind::Submenu(view)) = app.menu().and_then(|menu| menu.get(theme::VIEW_MENU))

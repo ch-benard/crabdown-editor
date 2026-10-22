@@ -17,13 +17,16 @@ export function initMenu(
   toolbar: Toolbar,
   preferences: Preferences,
   workspace: HTMLElement,
+  toggleEditor: () => void,
 ): void {
   // The menu is rebuilt with default check marks when the language changes.
   onLanguageChange(() => {
     theme.syncMenu();
     toolbar.syncMenu();
-    const checked = !workspace.classList.contains("preview-hidden");
-    void invoke("set_view_checked", { id: "toggle_preview", checked });
+    const editorVisible = !workspace.classList.contains("editor-hidden");
+    void invoke("set_view_checked", { id: "toggle_editor", checked: editorVisible });
+    const previewVisible = !workspace.classList.contains("preview-hidden");
+    void invoke("set_view_checked", { id: "toggle_preview", checked: previewVisible });
   });
 
   const handlers: Record<string, () => void> = {
@@ -38,7 +41,16 @@ export function initMenu(
     find: () => openSearchPanel(editor.view),
     preferences: () => preferences.open(),
     toggle_toolbar: () => toolbar.toggle(),
-    toggle_preview: () => workspace.classList.toggle("preview-hidden"),
+    toggle_editor: toggleEditor,
+    toggle_preview: () => {
+      // Keep at least one pane visible; restore the check mark when blocked.
+      const hide = !workspace.classList.contains("preview-hidden");
+      if (hide && workspace.classList.contains("editor-hidden")) {
+        void invoke("set_view_checked", { id: "toggle_preview", checked: true });
+        return;
+      }
+      workspace.classList.toggle("preview-hidden", hide);
+    },
     theme_system: () => theme.set("system"),
     theme_light: () => theme.set("light"),
     theme_dark: () => theme.set("dark"),

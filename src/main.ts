@@ -35,6 +35,17 @@ window.addEventListener("DOMContentLoaded", () => {
   void preview.render(editor.getDocument());
   void invoke("set_modified", { modified: false });
 
+  // Keep at least one pane visible; restore the check mark when blocked.
+  const toggleEditor = () => {
+    const hide = !layout.classList.contains("editor-hidden");
+    if (hide && layout.classList.contains("preview-hidden")) {
+      void invoke("set_view_checked", { id: "toggle_editor", checked: true });
+      return;
+    }
+    layout.classList.toggle("editor-hidden", hide);
+    if (!hide) editor.view.focus();
+  };
+
   syncScroll(editor.view.scrollDOM, previewPane);
   initSplitter(layout, splitter);
   onLanguageChange(() => {
@@ -45,9 +56,10 @@ window.addEventListener("DOMContentLoaded", () => {
     actions,
     editor,
     initTheme(editor),
-    initToolbar(toolbarRoot, editor.view),
+    initToolbar(toolbarRoot, editor.view, toggleEditor),
     initPreferences(() => editor.view.focus()),
     layout,
+    toggleEditor,
   );
   editor.view.focus();
 });

@@ -16,6 +16,7 @@ const en = {
   previewError: "Preview unavailable:",
   toolbarLabel: "Formatting",
   moreLabel: "More formatting",
+  previewOnlyLabel: "Preview only",
   actions: {
     paragraph: "Paragraph",
     h1: "Heading 1",
@@ -62,6 +63,7 @@ const fr: UiStrings = {
   previewError: "Aperçu indisponible :",
   toolbarLabel: "Mise en forme",
   moreLabel: "Plus de mise en forme",
+  previewOnlyLabel: "Aperçu seul",
   actions: {
     paragraph: "Paragraphe",
     h1: "Titre 1",
@@ -106,6 +108,7 @@ const es: UiStrings = {
   previewError: "Vista previa no disponible:",
   toolbarLabel: "Formato",
   moreLabel: "Más formato",
+  previewOnlyLabel: "Solo vista previa",
   actions: {
     paragraph: "Párrafo",
     h1: "Encabezado 1",
