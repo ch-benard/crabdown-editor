@@ -35,7 +35,9 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
         .item(&item("quit", label.quit, "CmdOrCtrl+Q")?)
         .build()?;
 
-    let edit = SubmenuBuilder::new(app, label.edit)
+    // Trailing space: prevents macOS from detecting the standard Edit menu and
+    // injecting system items (AutoFill, Writing Tools, Dictation, Emoji & Symbols).
+    let edit = SubmenuBuilder::new(app, format!("{} ", label.edit))
         .item(&item("undo", label.undo, "CmdOrCtrl+Z")?)
         .item(&item("redo", label.redo, "CmdOrCtrl+Shift+Z")?)
         .separator()
