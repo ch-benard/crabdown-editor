@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crabdown Editor</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <header class="toolbar"></header>
+    <main class="workspace">
+      <section class="pane editor-pane"></section>
+      <div
+        class="splitter"
+        role="separator"
+        aria-orientation="vertical"
+        aria-valuemin="15"
+        aria-valuemax="85"
+        tabindex="0"
+      ></div>
+      <article class="pane preview-pane markdown-body"></article>
+    </main>
+  </body>
+</html>

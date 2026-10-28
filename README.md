@@ -1,1 +1,69 @@
-# crabdown-editor
+# Crabdown Editor
+
+A desktop Markdown editor built with [Tauri v2](https://tauri.app/) (Rust backend) and TypeScript + Vite (frontend).
+
+Specification (in French): [`docs/CAHIER_DES_CHARGES.md`](docs/CAHIER_DES_CHARGES.md).
+
+## Prerequisites
+
+- **Rust ≥ 1.90** via [rustup](https://rustup.rs/) (`rustup update stable`)
+- **Node.js 24 LTS** and npm
+- Tauri system libraries (see the [official prerequisites](https://tauri.app/start/prerequisites/)):
+
+**Arch / Garuda**
+
+```sh
+sudo pacman -S --needed webkit2gtk-4.1 base-devel curl wget file openssl appmenu-gtk-module libappindicator-gtk3 librsvg xdotool
+```
+
+**Debian / Ubuntu**
+
+```sh
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+```
+
+## Development
+
+```sh
+npm install
+npm run tauri dev      # run the app with hot reload
+npm run typecheck      # TypeScript type check
+npm run tauri build    # release build and bundles
+```
+
+Standalone builds and installers for Linux and Windows: see [`docs/BUILDING.md`](docs/BUILDING.md).
+
+Rust checks (from `src-tauri/`):
+
+```sh
+cargo fmt --all
+cargo clippy --all-targets -- -D warnings
+cargo test
+```
+
+## Toolbar
+
+A thin formatting toolbar sits above the editor; hide or show it with **View → Show Toolbar** (the choice is remembered).
+
+- Buttons wrap the selection (`**…**`) or remove the formatting when it is already there; without a selection they insert a template with the placeholder selected.
+- Visible groups: headings (H1–H3), inline formatting (bold, italic, strikethrough, inline code, clear formatting) and code block, lists and quote, inserts (horizontal rule, table, link, image, footnote).
+- The **▾** menu holds Paragraph, H4–H6, underline, superscript, subscript and the GitHub alerts.
+- Every button shows its keyboard shortcut in its tooltip. The shortcuts are listed in `src/keymap.ts`.
+
+## Theme
+
+**View → Theme** offers *System* (default), *Light* and *Dark*; `Ctrl+Shift+T` cycles through them. The choice is remembered.
+
+In *System* mode the editor follows the OS colour scheme live. On Linux it is read from the XDG desktop portal (`org.freedesktop.appearance color-scheme`), so it follows the desktop's light/dark setting on KDE Plasma (`xdg-desktop-portal-kde`) and GNOME (`xdg-desktop-portal-gnome` or `-gtk`). Without a portal, *System* falls back to light.
+
+Exported HTML and printed PDFs always use the light theme.
+
+## Git workflow
+
+- `main`: released versions. `develop`: integration branch.
+- Work on a feature branch and open pull requests against **`develop`**.
+- CI (GitHub Actions) runs the frontend build, `cargo fmt`, `cargo clippy` and `cargo test` on every pull request.
+
+## Recommended IDE setup
+
+[VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
